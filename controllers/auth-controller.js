@@ -5,7 +5,7 @@ const login = (req ,res) => {
 const register = (req ,res) => { 
     const user = req.body;
 
-    const isAlreadyRegistered = await
+    // const isAlreadyRegistered = await
 
 
 };
