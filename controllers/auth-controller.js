@@ -1,19 +1,23 @@
 import userModel from "../model/userModel.js";
+import jwt from 'jsonwebtoken';
+
 
 const login = async(req, res) => {
-  const user = req.body;
+  const userData = req.body;
 
   try {
-    const isAlreadyRegistered = await userModel.findOne({ email: user.email });
-    if (isAlreadyRegistered)
-      return res.json({ success: false, message: "User Already registered " });
+    const user = await userModel.findOne({ email: userData.email });
+    if (!user) return res.json({ success: false, message: "Invalid User" });
 
-    const newUser = await userModel(user);
-    newUser.save();
+const token = jwt.sign({email: userData.email},process.env.JWT_SECRET,{
+    expiresIn:'1d',
+})
+    
     return res.json({
       success: true,
-      user: newUser,
-      message: "User registration successful",
+      user,
+      token,
+      message: "User logged in successful",
     });
   } catch (error) {
     return res.json({
