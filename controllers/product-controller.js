@@ -4,6 +4,8 @@ const getProducts = async (req, res) => {
   const { search, brand, category, price_range, sort_order, skip, limit } =
     req.query;
 
+console.log({search, brand, category, sort_order, skip, limit}, Number(price_range))
+
   try {
     let query = {};
     if (search) query.name = new RegExp(search, "i");
@@ -30,6 +32,8 @@ const getProducts = async (req, res) => {
       .skip(parseInt(skip))
       .limit(parseInt(limit))
       .sort(sortBy);
+
+      // console.log(result)
     return res.send(result);
   } catch (error) {
     console.log(error.message);
@@ -65,9 +69,28 @@ const getNumberOfProducts = async (req, res) => {
 const getAllCategories = async(req, res) => {
 console.log('called category')
   try {
-    const categories = await productModel.distinct("category");
+    const categories = await productModel.distinct("category",);
     // console.log(categories)
   return res.send(categories)
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: error.message });
+
+  }
+};
+
+const getAllBrands = async(req, res) => {
+console.log('called brand')
+const category = req.query.category
+  try {
+   if(category?.length > 0) { 
+    const Brands = await productModel.distinct("brand",{category});
+    return res.send(Brands)
+   }
+   const Brands = await productModel.distinct("brand");
+   // console.log(Brands)
+   return res.send(Brands)
+  
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({ message: error.message });
@@ -98,4 +121,4 @@ const addProduct = async (req, res) => {
   //   }
 };
 
-export { getProducts, addProduct, getNumberOfProducts ,getAllCategories};
+export { getProducts, addProduct, getNumberOfProducts ,getAllCategories,getAllBrands};
