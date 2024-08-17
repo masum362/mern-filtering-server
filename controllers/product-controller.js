@@ -1,7 +1,7 @@
 import productModel from "../model/productModel.js";
 
 const getProducts = async (req, res) => {
-  const { search, brand, category, price_range, sort_order } = req.query;
+  const { search, brand, category, price_range, sort_order,skip, limit } = req.query;
 
   try {
     let query = {};
@@ -24,12 +24,25 @@ const getProducts = async (req, res) => {
       sortBy.date = -1;
     }
 
-    const result = await productModel.find(query).sort(sortBy);
+    const result = await productModel.find(query).skip(parseInt(skip))
+    .limit(parseInt(limit)).sort(sortBy);
    return res.send(result);
   } catch (error) {
     console.log(error.message);
   }
 };
+
+const getNumberOfProducts = async (req, res) => {
+  try {
+    // const id = req.params.id;
+    const numberOfProducts = await productModel.countDocuments();
+
+    return res.status(200).json(numberOfProducts);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 
 const addProduct = async (req, res) => {
   //   // name,photoURL,description,price,brand,category,rating
@@ -54,4 +67,4 @@ const addProduct = async (req, res) => {
   //   }
 };
 
-export { getProducts, addProduct };
+export { getProducts, addProduct,getNumberOfProducts };
