@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 
 const login = async(req, res) => {
   const userData = req.body;
-
   try {
     const user = await userModel.findOne({ email: userData.email });
     if (!user) return res.json({ success: false, message: "Invalid User" });
@@ -29,11 +28,18 @@ const token = jwt.sign({email: userData.email},process.env.JWT_SECRET,{
 };
 
 const register = async (req, res) => {
+  // console.log('clicked')
   const user = req.body;
   try {
     const isAlreadyRegistered = await userModel.findOne({ email: user.email });
-    if (isAlreadyRegistered)
-      return res.json({ success: false, message: "User Already registered " });
+    if (isAlreadyRegistered){
+      if(user?.displayName === isAlreadyRegistered.displayName) {
+        return res.json({ success: false, message: "User Already registered " });   
+      }
+      const data = await userModel.updateOne({email:user.email},user);
+      return res.json({ success: false, message: "User Already registered " ,data});   
+    }
+    
 
     const newUser = await userModel(user);
     newUser.save();

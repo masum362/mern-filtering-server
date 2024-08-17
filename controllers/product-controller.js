@@ -1,7 +1,8 @@
 import productModel from "../model/productModel.js";
 
 const getProducts = async (req, res) => {
-  const { search, brand, category, price_range, sort_order,skip, limit } = req.query;
+  const { search, brand, category, price_range, sort_order, skip, limit } =
+    req.query;
 
   try {
     let query = {};
@@ -24,25 +25,55 @@ const getProducts = async (req, res) => {
       sortBy.date = -1;
     }
 
-    const result = await productModel.find(query).skip(parseInt(skip))
-    .limit(parseInt(limit)).sort(sortBy);
-   return res.send(result);
+    const result = await productModel
+      .find(query)
+      .skip(parseInt(skip))
+      .limit(parseInt(limit))
+      .sort(sortBy);
+    return res.send(result);
   } catch (error) {
     console.log(error.message);
   }
 };
 
 const getNumberOfProducts = async (req, res) => {
+  const { search, brand, category, price_range } =
+    req.query;
+
   try {
     // const id = req.params.id;
-    const numberOfProducts = await productModel.countDocuments();
+    let query = {};
+    if (search) query.name = new RegExp(search, "i");
+    if (brand) query.brand = brand;
+    if (category) query.category = category;
+    if (price_range) {
+      query.price = {
+        $gte: 0,
+        $lte: Number(price_range),
+      };
+    }
+    const result = await productModel
+      .countDocuments(query)
+    // const numberOfProducts = await productModel.countDocuments();
 
-    return res.status(200).json(numberOfProducts);
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
+const getAllCategories = async(req, res) => {
+console.log('called category')
+  try {
+    const categories = await productModel.distinct("category");
+    // console.log(categories)
+  return res.send(categories)
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: error.message });
+
+  }
+};
 
 const addProduct = async (req, res) => {
   //   // name,photoURL,description,price,brand,category,rating
@@ -67,4 +98,4 @@ const addProduct = async (req, res) => {
   //   }
 };
 
-export { getProducts, addProduct,getNumberOfProducts };
+export { getProducts, addProduct, getNumberOfProducts ,getAllCategories};
