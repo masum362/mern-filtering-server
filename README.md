@@ -13,7 +13,7 @@
 npm i
 ```
 
-- add the env_example.txt file code with your details in your .env file
+- add the [demo](./env_example.txt) file code with your details in your .env file
 
 
 - now run the project with this command.
