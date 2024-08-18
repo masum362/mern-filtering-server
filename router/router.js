@@ -7,15 +7,16 @@ import {
   getAllCategories,
   getAllBrands,
 } from "../controllers/product-controller.js";
+import { verify } from "./privateRoute.js";
 
 const router = express.Router();
 
-router.get("/number-of-products", getNumberOfProducts);
-router.get("/categories", getAllCategories);
-router.get("/brands", getAllBrands);
-router.get("/products", getProducts);
+router.get("/number-of-products",verify, getNumberOfProducts);
+router.get("/categories",verify, getAllCategories);
+router.get("/brands",verify, getAllBrands);
+router.get("/products",verify, getProducts);
 
-router.post("/addProduct", addProduct);
+// router.post("/addProduct", addProduct);
 
 router.post("/register", register);
 router.post("/login", login);

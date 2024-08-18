@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors({
     credentials:true,
-    origin:'*'
+    origin:['http://localhost:5173','https://thefind-137e7.web.app']
 }))
 app.use(express.json())
 app.use('/',router)
