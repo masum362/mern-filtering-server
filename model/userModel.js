@@ -11,6 +11,9 @@ const userSchema = mongoose.Schema({
     },
     photoURL:{
         type:String,
+    },
+    uid:{
+        type:String,
     }
 
 },{
